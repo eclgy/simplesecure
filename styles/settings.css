@@ -1,0 +1,106 @@
+@CHARSET "UTF-8";
+
+#simplesecure-header {
+	border: solid 1px #c6c6c6;
+	margin: 12px 2px 8px 2px;
+	padding: 20px;
+	background-color: #e1e1e1;
+}
+
+#simplesecure-header:after {
+	/* clearfix */
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+#simplesecure-header h3 {
+	margin: 0px 0px 0px 0px;
+}
+
+#simplesecure-logo {
+	 float: right; 
+	 margin-left: 15px;
+}
+
+#simplesecure-icon-container {
+	background-color: #333;
+	display: inline-block; 
+	padding: 10px 20px 0px 20px;
+	border-radius: 15px;
+	float: right;
+	margin-left: 25px;
+}
+
+#simplesecure-icon {
+	font-size: 150px;
+	margin: 0px;
+	line-height: 140px;
+	color: #4079C8;
+}
+
+#simplesecure-settings-content {
+	margin-top: 12px;
+}
+
+#simplesecure-settings-footer {
+	text-align: left;
+	background-color: #eee;
+	padding: 8px;
+}
+
+#simplesecure-settings-content table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+#simplesecure-settings-content table tbody tr {
+	vertical-align: top;
+}
+
+#simplesecure-settings-content table thead tr th {
+	border-bottom: 1px solid #bbb;
+	text-align: left;
+	background-color: #ccc;
+	padding: 8px;
+}
+
+#simplesecure-settings-content table thead tr th:first-child {
+	width: 245px;
+}
+
+#simplesecure-settings-content table thead tr th:nth-of-type(2) {
+
+}
+
+#simplesecure-settings-content table tbody tr td {
+	border-bottom: 1px solid #ddd;
+	text-align: left;
+	background-color: #eee;
+	padding: 8px;
+}
+
+#simplesecure-settings-content table tbody tr td input {
+	width: 225px;
+}
+
+#simplesecure-settings-content table tbody tr td textarea {
+	width: 500px;
+	height: 150px;
+	font-family: courier-new, courier;
+}
+
+.simplesecure-delete-container {
+	margin-top: 10px;
+	margin-left: 4px;
+}
+
+.simplesecure-settings a {
+	text-decoration: none;	
+}
+
+.simplesecure-settings a:hover {
+	text-decoration: underline;	
+}
