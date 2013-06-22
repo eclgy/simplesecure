@@ -104,10 +104,15 @@ not have access to them.
 
 == Upgrade Notice ==
 
-= 0.0.1 =
-* initial checkin
+= 0.0.2 =
+* add basic form validation
+* add session token
 
 == Changelog ==
+
+= 0.0.2 =
+* add basic form validation
+* add session token
 
 = 0.0.1 =
 * initial checkin

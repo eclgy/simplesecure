@@ -3,13 +3,13 @@
 Plugin Name: SimpleSecure
 Plugin URI: http://verysimple.com/products/simplesecure/
 Description: SimpleSecure is a secure contact form plugin that uses GPG to encrypt messages.  Proper!
-Version: 0.0.1
+Version: 0.0.2
 Author: VerySimple
 Author URI: http://verysimple.com/
 License: GPL2
 */
 
-define('SIMPLESECURE_VERSION','0.0.1');
+define('SIMPLESECURE_VERSION','0.0.2');
 define('SIMPLESECURE_SCHEMA_VERSION',1.0);
 
 /**
@@ -24,7 +24,8 @@ add_filter('query_vars', 'simplesecure_queryvars' );
 
 // handle any post-render intialization
 add_action('init', 'simplesecure_init');
-
+add_action('wp_logout', 'simplesecure_end_session');
+add_action('wp_login', 'simplesecure_end_session');
 
 /**
  * Fired on initialization.  Allows initialization to occur after page render.
@@ -32,7 +33,9 @@ add_action('init', 'simplesecure_init');
  */
 function simplesecure_init()
 {
-
+	// we'll be needed the session for storing tokens
+	if (!session_id()) session_start();
+	
 	// TODO register the MCE editor plugin if necessary
 // 	if ( current_user_can('edit_posts') || current_user_can('edit_pages') )
 // 	{
@@ -42,6 +45,39 @@ function simplesecure_init()
 // 			add_filter('mce_buttons', 'simplesecure_register_mce_buttons');
 // 		}
 // 	}
+}
+
+/**
+ * Fired session expires or user logs out
+ */
+function simplesecure_end_session() {
+	session_destroy ();
+}
+
+/**
+ * Generate a new token, store it in the server and return it
+ */
+function simplesecure_generate_token()
+{
+	$token = md5(mt_rand(1111111111,9999999999).microtime().mt_rand(1111111111,9999999999));
+	$_SESSION['simplesecure_token'] = $token;
+	return $token;
+}
+
+/**
+ * returns true if the given token matches the session.  either way the token is cleared from the session
+ * @param string $token
+ * @return bool
+ */
+function simplesecure_validate_token($token)
+{
+	$valid = array_key_exists('simplesecure_token', $_SESSION) 
+		&& $_SESSION['simplesecure_token'] 
+		&& $_SESSION['simplesecure_token'] == $token;
+	
+	unset($_SESSION['simplesecure_token']);
+	
+	return $valid;
 }
 
 /**
@@ -96,9 +132,9 @@ function simplesecure_display_form($params)
 	
 	// grab the email and the GPG key, exit if either isn't found
 	$email = is_array($params) && array_key_exists('email', $params) ? $params['email'] : '';
-	if (!$email) return '<div class="ss-error">Configuration Error: The shortcode requires an "email" parameter</div>';
+	if (!$email) return '<div class="ss-error"><i class="icon-warning-sign"></i> Configuration Error: The shortcode requires an "email" parameter</div>';
 	$key = simplesecure_get_key($email);
-	if (!$key) return '<div class="ss-error">Configuration Error: No GPG key was found for the specified email address.</div>';
+	if (!$key) return '<div class="ss-error"><i class="icon-warning-sign"></i> Configuration Error: No GPG key was found for the specified email address.</div>';
 	
 	if (simplesecure_is_ssl()) {
 		$output = "<div class='simplesecure-container simplesecure-secure'>\n";
@@ -116,15 +152,27 @@ function simplesecure_display_form($params)
 		you should avoid sending any private or sensitive information.</div>\n";
 	}
 	
-	$output .= '<form class="simplesecure-form" action="'. get_permalink( $post->ID ) . '" method="post" enctype="multipart/form-data" >';
+	$output .= '<form class="simplesecure-form" onsubmit="return ss_validate_form(jQuery);" action="'. get_permalink( $post->ID ) . '" method="post" enctype="multipart/form-data" >';
 	$output .= '<input name="ss_action" type="hidden" value="send" />';
-	$output .= "<div><label>Name:</label><span><input name='ss_name' type='text' value='' /></span></div>\n";
-	$output .= "<div><label>Email:</label><span><input name='ss_email' type='text' value='' /></span></div>\n";
-	$output .= "<div><label>Subject:</label><span><input name='ss_subject' type='text' value='' /></span></div>\n";
-	$output .= "<div><label>Message:</label><span><textarea name='ss_message'></textarea></span></div>\n";
+	$output .= '<input name="ss_token" type="hidden" value="'. simplesecure_generate_token() .'" />';
+	$output .= "<div><label>Name:</label><span><input id='ss_name' name='ss_name' type='text' value='' /></span></div>\n";
+	$output .= "<div><label>Email:</label><span><input id='ss_email' name='ss_email' type='text' value='' /></span></div>\n";
+	$output .= "<div><label>Subject:</label><span><input id='ss_subject' name='ss_subject' type='text' value='' /></span></div>\n";
+	$output .= "<div><label>Message:</label><span><textarea id='ss_message' name='ss_message'></textarea></span></div>\n";
 	$output .= "<div class='simplesecure-submit-container'><label></label><span><input type='submit' value='Send Message'></span></div>\n";
 	$output .= "</form>\n";
 	$output .= "</div>\n";
+	
+	// TODO: make this a little more slick
+	$output .= "<script type='text/javascript'>\n";
+	$output .= "function ss_validate_form($) {\n";
+	$output .= "if ($('#ss_name').val() == '') {alert('Please enter your name'); return false;}\n";
+	$output .= "if ($('#ss_email').val() == '') {alert('Please enter your email'); return false;}\n";
+	$output .= "if ($('#ss_subject').val() == '') {alert('Please enter a subject'); return false;}\n";
+	$output .= "if ($('#ss_message').val() == '') {alert('Please enter a message'); return false;}\n";
+	$output .= "return true;\n";
+	$output .= "}\n";
+	$output .= "</script>\n";
 	
 	return $output;
 }
@@ -167,11 +215,16 @@ function simplesecure_send_message($params)
 {
 	global $post;
 	
+	// verify our token to prevent re-submitting the form or certain types of abuse
+	$token = htmlspecialchars(get_query_var('ss_token'),ENT_NOQUOTES);
+	if (!simplesecure_validate_token($token)) return '<div class="ss-error"><i class="icon-warning-sign"></i> Your message was not sent due to a missing or invalid security token</div>';
+	
 	// grab the email and the GPG key, exit if either isn't found
 	$email = is_array($params) && array_key_exists('email', $params) ? $params['email'] : '';
-	if (!$email) return '<div class="ss-error">Configuration Error: The shortcode requires an "email" parameter</div>';
+	if (!$email) return '<div class="ss-error"><i class="icon-warning-sign"></i> Configuration Error: The shortcode requires an "email" parameter</div>';
 	$key = simplesecure_get_key($email);
-	if (!$key) return '<div class="ss-error">Configuration Error: No GPG key was found for the specified email address.</div>';
+	if (!$key) return '<div class="ss-error"><i class="icon-warning-sign"></i> Configuration Error: No GPG key was found for the specified email address.</div>';
+	
 	
 	$message = htmlspecialchars(get_query_var('ss_message'),ENT_NOQUOTES);
 	$name = htmlspecialchars(get_query_var('ss_name'),ENT_NOQUOTES);
