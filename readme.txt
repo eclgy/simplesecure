@@ -38,9 +38,9 @@ Manual Installation:
 
 == Screenshots ==
 
-1. Example SimpleSecure Form
+1. SimpleSecure
 2. Upload a Public Key
-2. Example Encrypted Message
+3. Example Encrypted Message
 
 == Frequently Asked Questions ==
 
