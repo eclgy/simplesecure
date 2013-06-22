@@ -16,13 +16,11 @@ email address where you can decrypt it using your private key and password.
 
 GPG is a secure public-key encryption system for sending secure data.
 
-This plugin is dedicated to the NSA and the PRISM system.
-
 = Features =
 
 * Easily add a secure contact form using a WordPress shortcode on any page
 * Manage your public GPG keys via the settings panel
-* Pure PHP implementation of GPG means no GPG binaries or shell access are required on the server
+* Pure PHP implementation of GPG means no binaries or shell access required
 
 == Installation ==
 
