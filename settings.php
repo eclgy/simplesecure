@@ -8,27 +8,10 @@
 // register the plugin settings menu and scripts
 add_action('admin_menu', 'simplesecure_create_menu');
 add_action('admin_enqueue_scripts', 'simplesecure_load_admin_scripts');
-add_action('wp_enqueue_scripts', 'simplesecure_load_scripts');
 
 // activation hooks
 // register_activation_hook('simplesecure/simplesecure.php', 'simplesecure_registration' );
 
-
-/**
- * Load client-side scripts necessary for end-user page
- * @param string $hook
- */
-function simplesecure_load_scripts($hook)
-{
-	// this is the end-user view
-	wp_enqueue_script('jquery');
-	
-	wp_register_style('font-awesome', plugins_url('simplesecure/styles/font-awesome.min.css') );
-	wp_enqueue_style('font-awesome');
-	
-	wp_register_style( 'ss-css', plugins_url('simplesecure/styles/simplesecure.css') );
-	wp_enqueue_style( 'ss-css' );	
-}
 
 /**
  * Load client-side scripts necessary for settings page

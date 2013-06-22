@@ -26,6 +26,10 @@ add_filter('query_vars', 'simplesecure_queryvars' );
 add_action('init', 'simplesecure_init');
 add_action('wp_logout', 'simplesecure_end_session');
 add_action('wp_login', 'simplesecure_end_session');
+add_action('wp_enqueue_scripts', 'simplesecure_load_scripts');
+
+/* keeps track of weather enqueued scripts have been written to the browser */
+$simplesecure_styles_were_loaded = false;
 
 /**
  * Fired on initialization.  Allows initialization to occur after page render.
@@ -35,16 +39,6 @@ function simplesecure_init()
 {
 	// we'll be needed the session for storing tokens
 	if (!session_id()) session_start();
-	
-	// TODO register the MCE editor plugin if necessary
-// 	if ( current_user_can('edit_posts') || current_user_can('edit_pages') )
-// 	{
-// 		if ( get_user_option('rich_editing') == 'true' && get_option('simplesecure_enable_editor_button',SIMPLESECURE_DEFAULT_ENABLE_EDITOR_BUTTON))
-// 		{
-// 			add_filter("mce_external_plugins", "simplesecure_register_mce_plugin");
-// 			add_filter('mce_buttons', 'simplesecure_register_mce_buttons');
-// 		}
-// 	}
 }
 
 /**
@@ -52,6 +46,18 @@ function simplesecure_init()
  */
 function simplesecure_end_session() {
 	session_destroy ();
+}
+
+/**
+ * Enqueue the scripts and registers stylesheets needed by the plugin, but only 
+ * enqueue the stylesheets if simplesecure_do_shortcode() if fired
+ * @param string $hook
+ */
+function simplesecure_load_scripts($hook)
+{
+	wp_enqueue_script('jquery');
+	wp_register_style('font-awesome', plugins_url('simplesecure/styles/font-awesome.min.css') );
+	wp_register_style( 'ss-css', plugins_url('simplesecure/styles/simplesecure.css') );
 }
 
 /**
@@ -88,6 +94,14 @@ function simplesecure_validate_token($token)
  */
 function simplesecure_do_shortcode($params)
 {
+	// lazy load the stylesheets so they only appear if the simplesecure shortcode is used
+	global $simplesecure_styles_were_loaded;	
+	if (!$simplesecure_styles_were_loaded) {
+		wp_enqueue_style('font-awesome');
+		wp_enqueue_style( 'ss-css' );
+		$simplesecure_styles_were_loaded = true;
+	}
+	
 	$action = get_query_var('ss_action');
 
 	switch($action)
@@ -98,28 +112,6 @@ function simplesecure_do_shortcode($params)
 		default:
 			return simplesecure_display_form($params);
 	}
-}
-
-/**
- * Register the SimpleSecure MCE Editor Plugin
- * @param array $plugin_array
- * @return array
- */
-function simplesecure_register_mce_plugin($plugin_array)
-{
-	$plugin_array['simplesecure'] = plugins_url('/simplesecure/scripts/editor_plugin.js');
-	return $plugin_array;
-}
-
-/**
- * Add the SimpleSecure button to the MCE Editor
- * @param array $buttons
- * @return array
- */
-function simplesecure_register_mce_buttons($buttons)
-{
-	array_push($buttons, "simplesecureButton");
-	return $buttons;
 }
 
 /**
