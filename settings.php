@@ -72,7 +72,7 @@ function simplesecure_settings_page()
 		
 			<div id="simplesecure-icon-container"><i id="simplesecure-icon" class="icon-lock"></i></div>
 			
-			<h3>User SimpleSecure to securely encrypt contact form emails using GPG</h3>
+			<h3>SimpleSecure securely encrypts contact form emails with GPG</h3>
 			
 			<p>SimpleSecure is a basic contact form plugin with the added feature of encypting the email
 			message contents using strong GPG public key encryption.  Standard form processing plugins send
@@ -90,7 +90,7 @@ function simplesecure_settings_page()
 			
 			<h3>Support</h3>
 			
-			<p>The supprt forum for SimpleSecure is located at <a href="http://wordpress.org/support/plugin/simplesecure">wordpress.org/support/plugin/simplesecure</a></p>
+			<p>The support forum for SimpleSecure is located at <a href="http://wordpress.org/support/plugin/simplesecure">wordpress.org/support/plugin/simplesecure</a></p>
 			
 			<p>Help with GPG configuration or decryption is at <a href="http://www.gnupg.org/">www.gnupg.org/</a>,
 			<a href="http://www.gpg4win.org/">www.gpg4win.org/</a> and <a href="https://gpgtools.org/">gpgtools.org/</a></p>

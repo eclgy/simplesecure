@@ -6,21 +6,33 @@ Requires at least: 2.9
 Tested up to: 3.6
 Stable tag: trunk
 
-SimpleSecure is a secure contact form plugin that uses GPG to encrypt messages.
+SimpleSecure is a secure contact form plugin that encrypts messages using a pure PHP implementation of GPG / PGP.
 
 == Description ==
 
-SimpleSecure is a plugin that allows you to put a secure contact form on your WordPress site.
-The information submitted by the visitor will be encrypted using GPG and sent to your
-email address where you can decrypt it using your private key and password.
+SimpleSecure is a plugin that allows you to insert a secure contact form on any page or post.
+The email message submitted by your visitor is securely encrypted using GPG/PGP, however no binaries are
+required nor are any shell calls necessary.  SimpleSecure includes a pure PHP port of the GPG encryption functions
+which allows it to run on any server that supports PHP.  In other words, you do not need to install GPG or allow shell 
+access to PHP on your server.
 
-GPG is a secure public-key encryption system for sending secure data.
+The reason for implementing PGP in pure PHP is to make installation and configuration of the plugin
+simple and easy.  You do not need admin access nor do you need to modify file permissions on your server.
+If you have struggled with encrypted form processors in the past you'll be surprised at how SimpleSecure
+"just works" out of the box with almost zero configuration.
+
+PGP is a data encryption and decryption computer program that provides cryptographic privacy and 
+authentication for data communication.  PGP can be used to send messages confidentially. For this, PGP 
+combines symmetric-key encryption and public-key encryption. The message is encrypted using a symmetric 
+encryption algorithm.  GnuPG (GPG) stands for GNU Privacy Guard and is GNU's tool for secure communication 
+and data storage. It can be used to encrypt data and to create digital signatures. It is compliant with the 
+OpenPGP Internet standard as described in RFC-4880.
 
 = Features =
 
 * Easily add a secure contact form using a WordPress shortcode on any page
 * Manage your public GPG keys via the settings panel
-* Pure PHP implementation of GPG means no binaries or shell access required
+* Pure PHP implementation of GPG - no binaries or shell access required
 
 == Installation ==
 
