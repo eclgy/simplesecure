@@ -50,7 +50,7 @@ Manual Installation:
 
 == Screenshots ==
 
-1. SimpleSecure
+1. SimpleSecure Secure Form
 2. Upload a Public Key
 3. Example Encrypted Message
 
