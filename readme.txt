@@ -48,6 +48,8 @@ Manual Installation:
 2. Unzip and upload the 'simplesecure' folder to your '/wp-content/plugins/' directory
 3. Activate the plugin through the 'Plugins' menu in WordPress
 
+After installation view the PGP setup tutorial at http://www.youtube.com/watch?v=FFxFevczuRg
+
 == Screenshots ==
 
 1. SimpleSecure Secure Form
@@ -60,18 +62,26 @@ Manual Installation:
 
 SimpleSecure is a plugin that adds a secure contact form using GPG to encrypt messages
 
-= 2. What is GPG? =
+= 2. What is GPG and PGP? =
 
-GPG is an open source implementation of PGP public key encryption.  PGP is a secure
-encryption technology that allows people to send secure messages without having to
-first share any secret information.  More info is at http://www.gnupg.org/
+PGP is a software utility that is used to encrypt data using "public key encryption."
+
+GPG is an open source version of PGP that is free for personal and commercial use. 
+ 
+Public key encryption is a method of encryption that does not require any of
+the parties to share any common, secret information, such as a password, in 
+order to communication securely.
+
+More info is at http://www.gnupg.org/
 
 = 3. Where do I get GPG? =
 
 GPG can be downloaded from http://www.gnupg.org/, however there are user
 interfaces for Windows and Mac users at http://www.gpg4win.org/ and https://gpgtools.org/
 
-= 4. How do I get started? =
+= 4. How do I get started with GPG? =
+
+A tutorial video is available at http://www.youtube.com/watch?v=FFxFevczuRg
 
 The first step is to install GPG, either the command line version or a graphical
 interface on your computer.  Once installed you will generate a public/private
