@@ -124,11 +124,13 @@ not have access to them.
 
 == Upgrade Notice ==
 
-= 0.0.2 =
-* add basic form validation
-* add session token
+= 0.0.3 =
+* fixed bug where email was sent to sender instead of recipient
 
 == Changelog ==
+
+= 0.0.3 =
+* fixed bug where email was sent to sender instead of recipient
 
 = 0.0.2 =
 * add basic form validation

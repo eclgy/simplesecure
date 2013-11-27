@@ -3,13 +3,13 @@
 Plugin Name: SimpleSecure
 Plugin URI: http://verysimple.com/products/simplesecure/
 Description: SimpleSecure is a secure contact form plugin that uses GPG to encrypt messages.  Proper!
-Version: 0.0.2
+Version: 0.0.3
 Author: VerySimple
 Author URI: http://verysimple.com/
 License: GPL2
 */
 
-define('SIMPLESECURE_VERSION','0.0.2');
+define('SIMPLESECURE_VERSION','0.0.3');
 define('SIMPLESECURE_SCHEMA_VERSION',1.0);
 
 /**
@@ -220,7 +220,7 @@ function simplesecure_send_message($params)
 	
 	$message = htmlspecialchars(get_query_var('ss_message'),ENT_NOQUOTES);
 	$name = htmlspecialchars(get_query_var('ss_name'),ENT_NOQUOTES);
-	$email = htmlspecialchars(get_query_var('ss_email'),ENT_NOQUOTES);
+	$fromEmail = htmlspecialchars(get_query_var('ss_email'),ENT_NOQUOTES);
 	$subject = htmlspecialchars(get_query_var('ss_subject'),ENT_NOQUOTES);
 	
 	$output = '';
@@ -231,7 +231,7 @@ function simplesecure_send_message($params)
 
 		$body .= "Subject: " . $subject . "\n";
 		$body .= "Name: " . $name . "\n";
-		$body .= "Email: " . $email . "\n";
+		$body .= "Email: " . $fromEmail . "\n";
 		$body .= "Message: " . $message . "\n";
 
 		// let's do the magic
