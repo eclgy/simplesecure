@@ -10,6 +10,12 @@ srand((float) $gpg_sec + ((float) $gpg_usec * 100000));
  */
 class GPG_Utility
 {
+	
+	static function starts_with($haystack, $needle)
+	{
+		return $needle === "" || strpos($haystack, $needle) === 0;
+	}
+	
 	static function B0($x) {
 		return ($x & 0xff);
 	}
@@ -117,7 +123,7 @@ class GPG_Utility
 		return $r;
 	}
 
-	function c_random() {
+	static function c_random() {
 		return round(rand(0, 0xff));
 	}
 

@@ -124,8 +124,11 @@ not have access to them.
 
 == Upgrade Notice ==
 
-= 0.0.3 =
-* fixed bug where email was sent to sender instead of recipient
+= 0.0.4 =
+* fixed "not a MPI" error on PHP 5.5.x
+* updated GPG library for compatibility with PHP 5.5.x
+* updated GPG library to handle comment lines in a public key
+* update GPG library to better report problems with public key
 
 == Changelog ==
 

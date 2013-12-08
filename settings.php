@@ -8,10 +8,21 @@
 // register the plugin settings menu and scripts
 add_action('admin_menu', 'simplesecure_create_menu');
 add_action('admin_enqueue_scripts', 'simplesecure_load_admin_scripts');
+add_filter("plugin_action_links_simplesecure/simplesecure.php", 'simplesecure_settings_link' );
 
 // activation hooks
 // register_activation_hook('simplesecure/simplesecure.php', 'simplesecure_registration' );
 
+
+/**
+ * Settings link that appears on the plugins overview page
+ * @param array $links
+ * @return array
+ */
+function simplesecure_settings_link($links) {
+	$links[] = '<a href="'. get_admin_url(null, 'options-general.php?page='.__FILE__) .'">Settings</a>';
+	return $links;
+}
 
 /**
  * Load client-side scripts necessary for settings page

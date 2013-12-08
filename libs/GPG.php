@@ -17,7 +17,7 @@ require_once("GPG/globals.php");
  * @copyright 1997-2012 VerySimple, Inc.
  * @license http://www.gnu.org/licenses/gpl.html  GPL
  * @todo implement decryption
- * @version 1.0
+ * @version 1.1
  * 
  * @example 
  * 		require_once 'libs/GPG.php';
@@ -97,7 +97,16 @@ class GPG
 		$exp = array();
 		$enc = "";
 	 
+		if (strlen($public_key) == 0) {
+			throw new Exception('Public key parameter is empty');
+		}
+		
 		$s = base64_decode($public_key);
+		
+		if (strlen($s) == 0) {
+			throw new Exception('Unable to decode public key');
+		}
+		
 		$l = floor((ord($s[0]) * 256 + ord($s[1]) + 7) / 8);
 		$mod = mpi2b(substr($s, 0, $l + 2));
 		if($key_type) {

@@ -3,13 +3,13 @@
 Plugin Name: SimpleSecure
 Plugin URI: http://verysimple.com/products/simplesecure/
 Description: SimpleSecure is a secure contact form plugin that uses GPG to encrypt messages.  Proper!
-Version: 0.0.3
+Version: 0.0.4
 Author: VerySimple
 Author URI: http://verysimple.com/
 License: GPL2
 */
 
-define('SIMPLESECURE_VERSION','0.0.3');
+define('SIMPLESECURE_VERSION','0.0.4');
 define('SIMPLESECURE_SCHEMA_VERSION',1.0);
 
 /**
@@ -207,9 +207,12 @@ function simplesecure_send_message($params)
 {
 	global $post;
 	
+	// allow shortcode to specify skipping the token param (not recommended for production sites)
+	$enforceToken = array_key_exists('token', $params) && $params['token'] == 'false' ? false : true;
+	
 	// verify our token to prevent re-submitting the form or certain types of abuse
 	$token = htmlspecialchars(get_query_var('ss_token'),ENT_NOQUOTES);
-	if (!simplesecure_validate_token($token)) return '<div class="ss-error"><i class="icon-warning-sign"></i> Your message was not sent due to a missing or invalid security token</div>';
+	if ($enforceToken && !simplesecure_validate_token($token)) return '<div class="ss-error"><i class="icon-warning-sign"></i> Your message was not sent due to a missing or invalid security token</div>';
 	
 	// grab the email and the GPG key, exit if either isn't found
 	$email = is_array($params) && array_key_exists('email', $params) ? $params['email'] : '';
@@ -248,7 +251,7 @@ function simplesecure_send_message($params)
 	}
 	catch (Exception $ex)
 	{
-		$output .= "<div class='ss-error'>Error sending message: " . htmlspecialchars($ex->getMessage()) . "  Please use the back button to return to the previous page.</div>\n";
+		$output .= "<div class='ss-error'>An error occured: '" . htmlspecialchars($ex->getMessage()) . "'  Please use the back button to return to the previous page.</div>\n";
 		$output .= "<!--\n\n" . htmlentities($ex->getTraceAsString()) . "\n\n-->";
 	}
 
