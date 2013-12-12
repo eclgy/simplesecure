@@ -3,7 +3,7 @@ Contributors: verysimple
 Donate link: http://verysimple.com/products/simplesecure/
 Tags: contact form, secure, pgp, gpg, secure form, form processor
 Requires at least: 2.9
-Tested up to: 3.6
+Tested up to: 3.9
 Stable tag: trunk
 
 SimpleSecure is a secure contact form plugin that encrypts messages using a pure PHP implementation of GPG / PGP.
