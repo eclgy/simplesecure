@@ -3,13 +3,13 @@
 Plugin Name: SimpleSecure
 Plugin URI: http://verysimple.com/products/simplesecure/
 Description: SimpleSecure is a secure contact form plugin that uses GPG to encrypt messages.  Proper!
-Version: 0.0.4
+Version: 0.0.6
 Author: VerySimple
 Author URI: http://verysimple.com/
 License: GPL2
 */
 
-define('SIMPLESECURE_VERSION','0.0.4');
+define('SIMPLESECURE_VERSION','0.0.6');
 define('SIMPLESECURE_SCHEMA_VERSION',1.0);
 
 /**
@@ -151,6 +151,13 @@ function simplesecure_display_form($params)
 	$output .= "<div><label>Email:</label><span><input id='ss_email' name='ss_email' type='text' value='' /></span></div>\n";
 	$output .= "<div><label>Subject:</label><span><input id='ss_subject' name='ss_subject' type='text' value='' /></span></div>\n";
 	$output .= "<div><label>Message:</label><span><textarea id='ss_message' name='ss_message'></textarea></span></div>\n";
+	
+	$recaptchaKey = get_option('simplesecure_recaptcha_key');
+	if ($recaptchaKey) {
+		$output .=  "<script src='https://www.google.com/recaptcha/api.js'></script>";
+		$output .=  "<div style='margin-left: 105px;' class='g-recaptcha' data-sitekey='$recaptchaKey'></div>";
+	}
+	
 	$output .= "<div class='simplesecure-submit-container'><label></label><span><input type='submit' value='Send Message'></span></div>\n";
 	$output .= "</form>\n";
 	$output .= "</div>\n";
@@ -198,6 +205,19 @@ function simplesecure_get_key($email)
 }
 
 /**
+ * Returns the IP address of the user
+ * @return string
+ */
+function simplesecure_get_remote_ip() 
+{
+	if (isset($_SERVER['HTTP_CLIENT_IP'])) return $_SERVER['HTTP_CLIENT_IP'];
+	if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) return $_SERVER['HTTP_X_FORWARDED_FOR'];
+	if (isset($_SERVER['REMOTE_ADDR'])) return $_SERVER['REMOTE_ADDR'];
+	return '0.0.0.0';
+}
+
+
+/**
  * Submit the candidate application
  * into the page
  * @param array $params
@@ -213,6 +233,28 @@ function simplesecure_send_message($params)
 	// verify our token to prevent re-submitting the form or certain types of abuse
 	$token = htmlspecialchars(get_query_var('ss_token'),ENT_NOQUOTES);
 	if ($enforceToken && !simplesecure_validate_token($token)) return '<div class="ss-error"><i class="icon-warning-sign"></i> Your message was not sent due to a missing or invalid security token</div>';
+	
+	// do the re-captcha test if there is a key specified
+	$recaptchaKey = get_option('simplesecure_recaptcha_key');
+	if ($recaptchaKey) {
+
+		$data = wp_remote_post(
+			'https://www.google.com/recaptcha/api/siteverify', 
+			array('method' => 'POST',
+				'body' => array('secret'=>get_option('simplesecure_recaptcha_secret'),
+				'response'=>get_query_var('g-recaptcha-response'),
+				'remoteip'=>simplesecure_get_remote_ip())
+			)
+		);
+		$json = $data['body'];
+		$result = json_decode($json);
+
+		if (!($result && $result->success)) {
+			// print_r($json); // debugging
+			return '<div class="ss-error"><i class="icon-warning-sign"></i> Please verify that you are not a robot</div>';
+		}
+
+	}
 	
 	// grab the email and the GPG key, exit if either isn't found
 	$email = is_array($params) && array_key_exists('email', $params) ? $params['email'] : '';
@@ -235,6 +277,7 @@ function simplesecure_send_message($params)
 		$body .= "Subject: " . $subject . "\n";
 		$body .= "Name: " . $name . "\n";
 		$body .= "Email: " . $fromEmail . "\n";
+		$body .= "Sender IP: " . (array_key_exists('REMOTE_ADDR', $_SERVER) ? $_SERVER['REMOTE_ADDR'] : '?.?.?.?' ) . "\n";
 		$body .= "Message: " . $message . "\n";
 
 		// let's do the magic
@@ -274,5 +317,6 @@ function simplesecure_queryvars( $qvars )
 	$qvars[] = 'ss_email';
 	$qvars[] = 'ss_message';
 	$qvars[] = 'ss_token';
+	$qvars[] = 'g-recaptcha-response';
  	return $qvars;
 }

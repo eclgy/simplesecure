@@ -64,6 +64,8 @@ function simplesecure_register_settings()
 {
 	//register our settings
 	register_setting( 'simplesecure-settings-group', 'simplesecure_data' );
+	register_setting( 'simplesecure-settings-group', 'simplesecure_recaptcha_key' );
+	register_setting( 'simplesecure-settings-group', 'simplesecure_recaptcha_secret' );
 }
 
 /**
@@ -76,13 +78,10 @@ function simplesecure_settings_page()
 	?>
 	<div class="wrap simplesecure-settings">
 	
-		<div id="icon-options-general" class="icon32"><br></div>
 		<h2>SimpleSecure Settings</h2>
 	
 		<div id="simplesecure-header">
 		
-			<div id="simplesecure-icon-container"><i id="simplesecure-icon" class="icon-lock"></i></div>
-			
 			<h3>SimpleSecure securely encrypts contact form emails with GPG</h3>
 			
 			<p>SimpleSecure is a basic contact form plugin with the added feature of encypting the email
@@ -114,13 +113,30 @@ function simplesecure_settings_page()
 			
 			<input type="hidden" id="simplesecure_data" name="simplesecure_data" value="<?php echo str_replace('"', '&quot;', get_option('simplesecure_data','[]') ); ?>" />
 			
-			<h2><i class="icon-lock"></i> GPG Keys</h2>
+			<h2><span class="dashicons dashicons-lock"></span> GPG Keys</h2>
 			
 			<div id="simplesecure-settings-content"></div>
 			
 			<div id="simplesecure-settings-footer">
 				<button id="simplesecure-add-key" class="button"><i class="icon-plus-sign"></i> Add New Key</button>
 			</div>
+			
+			<h2><span class="dashicons dashicons-googleplus"></span> reCaptcha</h2>
+			
+			<p>SimpleSecure includes basic spam protection, however you can add additional protection using the
+			free Google reCAPTCHA service. To add this feature to your forms, please obtain a reCAPTCHA Site Key and Site Secret and provide them
+			below. You can obtain these from <a href="https://www.google.com/recaptcha" target="_blank">https://www.google.com/recaptcha</a>.
+			
+			<table style="width: 100%;">
+				<tr>
+					<td style="width: 261px;">Site Key</td>
+					<td><input type="text" name="simplesecure_recaptcha_key" id="simplesecure_recaptcha_key" value="<?php echo get_option('simplesecure_recaptcha_key') ?>" style="width: 100%"></td>
+				</tr>
+				<tr>
+					<td style="width: 261px;">Secret Key</td>
+					<td><input type="password" name="simplesecure_recaptcha_secret" id="simplesecure_recaptcha_secret" value="<?php echo get_option('simplesecure_recaptcha_secret') ?>" style="width: 100%"></td>
+				</tr>
+			</table>
 			
 			<p class="submit"><input type="submit" class="button-primary" value="Save Settings" /></p>
 			

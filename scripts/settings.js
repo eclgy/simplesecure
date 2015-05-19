@@ -58,7 +58,7 @@ var KeyChainView = (function ($) {
 		return '<tr>'
 			+'<td><div><input class="simplesecure-editor" id="ss_email_'+ i +'" data-index="'+ i +'" type="text" value="' + email +'" /></div>'
 			+'<div class="simplesecure-delete-container"><a tabindex="-1" class="simplesecure-delete" data-index="' + i +'" href="#"><i class="icon-minus-sign-alt"></i> Delete Key</a></div></td>'
-			+'<td><div><textarea class="simplesecure-editor" id="ss_key_'+ i +'" data-index="'+ i +'">'+ key +'</textarea></div></td>'
+			+'<td><div><textarea class="simplesecure-editor" id="ss_key_'+ i +'" data-index="'+ i +'" style="width:100%;">'+ key +'</textarea></div></td>'
 			+'</tr>';
 	}
 	
